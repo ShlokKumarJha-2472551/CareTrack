@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
+
+            - id: clinical-document-service
+              uri: lb://clinical-document-service
+              predicates:
+                Path=/documents/**
+
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - name: Path
+                  args:
+                    pattern: /api/orders/**
+            - id: result-service
+              uri: lb://order-service
+              predicates:
+                - name: Path
+                  args:
+                    pattern: /api/results/**
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+
+            - id: patient-service
+              uri: lb://patientregistrychart
+              predicates:
+                - Path=/api/v1/patients/**
+            - id: appointment
+              uri: lb://appointment
+              predicates:
+                - name: Path
+                  args:
+                    pattern: /appointments/**
+            - id: encounter
+              uri: lb://appointment
+              predicates:
+               - name: Path
+                 args:
+                    pattern: /encounters/**
+            - id: appointment-service
+              uri: lb://appointment-service
+              predicates:
+                - name: Path
+                  args:
+                    pattern: /api/v1/**
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+server:
+  port: 8082
